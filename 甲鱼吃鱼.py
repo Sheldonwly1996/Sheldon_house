@@ -1,5 +1,5 @@
 # I don't know the reason that the turrle  always loses.
-# And it sometimes tells me that 
+# And it sometimes tells me that： 
 # Traceback (most recent call last):
 #  File "C:/Users/zxd/AppData/Local/Programs/Python/Python36/python学习/38/甲鱼吃鱼.py", line 105, in <module>
 #    if tt.address == f[count].address:
