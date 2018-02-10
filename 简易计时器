@@ -2,38 +2,52 @@ import time as t
 
 class MyTimer:
     def __init__(self):
-        self.t1 = tuple()
-        self.t2 = tuple()
-        self.t = 0
+        self.t1 = []
+        self.t2 = []
+        self.t = []
+        self.unit = ['年','月','天','小时','分钟','秒']
+        self.prompt = '未开始计时！'
+        
     # 开始计时
     def start(self):
         self.t1 = t.localtime()
+        self.prompt = '提示：请先调用stop()停止计时！'
         print("计时开始")
 
     # 结束计时，并提示
     def stop(self):
-        if self.t1 == tuple():
+        self.prompt = '总共运行了'
+        if self.t1 == []:
             print("提示：请先调用start()开始计时！")
-        elif self.t2 != tuple():
+        elif self.t2 != []:
             print("嘻嘻，已经计时结束了")        
         else:
             self.t2 = t.localtime()
-            if self.t2[5] < self.t1[5]:
-                self.t = (self.t2[4] - self.t1[4])*60 + self.t2[5] - self.t1[5]
-            else:       
-                self.t = self.t2[5] - self.t1[5]
+            for each in range(6):
+                self.t.append(self.t2[each] - self.t1[each])
+                if self.t[each]:
+                    self.prompt += (str(self.t[each])) + self.unit[each]
+                    
             print("计时结束！")
+            self.t1 = []
+            self.t2 = []
     
     # 输出
     def __str__(self):
-        return "总共运行了"+str(self.t)+"秒"
+        return self.prompt
 
     __repr__ = __str__
     
     # 计时器相加
     def __add__(self,other):
-        return "总共运行了"+str(self.t+other.t)+"秒"
+        prompt = '总共运行了'
+        result = []
+        for each in range(6):
+            result.append(self.t[each] + other.t[each])
+            if result[each]:
+                prompt += (str(result[each])) + self.unit[each]
+
+        return prompt
         
 
     
-
