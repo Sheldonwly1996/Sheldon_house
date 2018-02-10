@@ -6,13 +6,14 @@ class MyTimer:
         self.t2 = []
         self.t = []
         self.unit = ['年','月','天','小时','分钟','秒']
+        self.borrow = [0,12,31,24,60,60]
         self.prompt = '未开始计时！'
         
     # 开始计时
     def start(self):
         self.t1 = t.localtime()
         self.prompt = '提示：请先调用stop()停止计时！'
-        print("计时开始")
+        print("计时开始！")
 
     # 结束计时，并提示
     def stop(self):
@@ -28,10 +29,23 @@ class MyTimer:
     # 内部方法，计时
     def _calc(self):
         self.prompt = '总共运行了'
+        # 低位不足减，向高位借
         for each in range(6):
-            self.t.append(self.t2[each] - self.t1[each])
-            if self.t[each]:
-                self.prompt += (str(self.t[each])) + self.unit[each]                    
+            temp = self.t2[each] - self.t1[each]
+            if temp < 0:
+                i = 1
+                while self.t[each-i] < 1:
+                    self.t[each-i] += self.borrow[each-i] - 1
+                    self.t[each-i-1] -= 1
+                    i += 1
+                self.t.append(self.borrow[each]+temp)
+                self.t[each-1] -=1
+            else:
+                self.t.append(temp)
+        
+        for i in range(6):
+            if self.t[i]:
+                self.prompt += (str(self.t[i])) + self.unit[i]                    
         print("计时结束！")
         self.t1 = []
         self.t2 = []
