@@ -16,21 +16,26 @@ class MyTimer:
 
     # 结束计时，并提示
     def stop(self):
-        self.prompt = '总共运行了'
         if self.t1 == []:
             print("提示：请先调用start()开始计时！")
         elif self.t2 != []:
             print("嘻嘻，已经计时结束了")        
         else:
             self.t2 = t.localtime()
-            for each in range(6):
-                self.t.append(self.t2[each] - self.t1[each])
-                if self.t[each]:
-                    self.prompt += (str(self.t[each])) + self.unit[each]
-                    
-            print("计时结束！")
-            self.t1 = []
-            self.t2 = []
+            self._calc()
+            
+
+    # 内部方法，计时
+    def _calc(self):
+        self.prompt = '总共运行了'
+        for each in range(6):
+            self.t.append(self.t2[each] - self.t1[each])
+            if self.t[each]:
+                self.prompt += (str(self.t[each])) + self.unit[each]                    
+        print("计时结束！")
+        self.t1 = []
+        self.t2 = []
+        
     
     # 输出
     def __str__(self):
