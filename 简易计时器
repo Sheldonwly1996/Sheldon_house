@@ -1,54 +1,30 @@
 import time as t
 
 class MyTimer:
-    def __init__(self):
-        self.t1 = []
-        self.t2 = []
-        self.t = []
-        self.unit = ['年','月','天','小时','分钟','秒']
-        self.borrow = [0,12,31,24,60,60]
+    def __init__(self,func,number=1000000):
+        self.t = 0
+        self.func = func
         self.prompt = '未开始计时！'
-        
-    # 开始计时
-    def start(self):
-        self.t1 = t.localtime()
-        self.prompt = '提示：请先调用stop()停止计时！'
-        print("计时开始！")
-
-    # 结束计时，并提示
-    def stop(self):
-        if self.t1 == []:
-            print("提示：请先调用start()开始计时！")
-        elif self.t2 != []:
-            print("嘻嘻，已经计时结束了")        
-        else:
-            self.t2 = t.localtime()
-            self._calc()
+        self.default_timer = t.perf_counter
+        self.number = number
             
-
     # 内部方法，计时
-    def _calc(self):
-        self.prompt = '总共运行了'
-        # 低位不足减，向高位借
-        for each in range(6):
-            temp = self.t2[each] - self.t1[each]
-            if temp < 0:
-                i = 1
-                while self.t[each-i] < 1:
-                    self.t[each-i] += self.borrow[each-i] - 1
-                    self.t[each-i-1] -= 1
-                    i += 1
-                self.t.append(self.borrow[each]+temp)
-                self.t[each-1] -=1
-            else:
-                self.t.append(temp)
-        
-        for i in range(6):
-            if self.t[i]:
-                self.prompt += (str(self.t[i])) + self.unit[i]                    
+    def timing(self):
+        self.t1 = self.default_timer()
+        for i in range(self.number):
+            self.func()
+        self.t2 = self.default_timer()
+        self.t = self.t2 - self.t1
+        self.prompt = "总共运行了%0.2f秒" % self.t       
         print("计时结束！")
-        self.t1 = []
-        self.t2 = []
+
+    def set_timer(self,timer):
+        if timer == 'process_time':
+            self.default_timer = t.process_time
+        elif timer == 'perf_counter':
+            self.default_timer = t.perf_counter
+        else:
+            print("输入无效，请输入perf_counter或process_time")
         
     
     # 输出
@@ -59,12 +35,8 @@ class MyTimer:
     
     # 计时器相加
     def __add__(self,other):
-        prompt = '总共运行了'
-        result = []
-        for each in range(6):
-            result.append(self.t[each] + other.t[each])
-            if result[each]:
-                prompt += (str(result[each])) + self.unit[each]
+        result = self.t + other.t
+        prompt = "总共运行了%0.2f秒" % result
 
         return prompt
         
